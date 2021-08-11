@@ -109,6 +109,23 @@ export const ignoreInterfaceOptionSchema: JSONSchema4 = {
   additionalProperties: false,
 };
 
+export type IgnorePrefixSelectorOption = {
+  readonly ignorePrefixSelector?: ReadonlyArray<string> | string;
+};
+
+export const ignorePrefixSelectorOptionSchema: JSONSchema4 = {
+  type: "object",
+  properties: {
+    ignorePrefixSelector: {
+      type: ["string", "array"],
+      items: {
+        type: "string",
+      },
+    },
+  },
+  additionalProperties: false,
+};
+
 /**
  * Get the identifier text of the given node.
  */

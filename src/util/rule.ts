@@ -90,6 +90,29 @@ export function createRule<
   defaultOptions: Options,
   ruleFunctionsMap: RuleFunctionsMap<MessageIds, Options>
 ): Rule.RuleModule {
+  return createRuleUsingFunction(
+    name,
+    meta,
+    defaultOptions,
+    () => ruleFunctionsMap
+  );
+}
+
+/**
+ * Create a rule.
+ */
+export function createRuleUsingFunction<
+  MessageIds extends string,
+  Options extends BaseOptions
+>(
+  name: string,
+  meta: RuleMetaData<MessageIds>,
+  defaultOptions: Options,
+  createFunction: (
+    context: TSESLint.RuleContext<MessageIds, readonly [Options]>,
+    options: Options
+  ) => RuleFunctionsMap<MessageIds, Options>
+): Rule.RuleModule {
   return ESLintUtils.RuleCreator(
     (name) =>
       `https://github.com/jonaskello/eslint-plugin-functional/blob/v${version}/docs/rules/${name}.md`
@@ -100,13 +123,15 @@ export function createRule<
     create: (
       context: TSESLint.RuleContext<MessageIds, readonly [Options]>,
       [options]: readonly [Options]
-    ) =>
-      Object.fromEntries(
+    ) => {
+      const ruleFunctionsMap = createFunction(context, options);
+      return Object.fromEntries(
         Object.entries(ruleFunctionsMap).map(([nodeSelector, ruleFunction]) => [
           nodeSelector,
           checkNode(ruleFunction, context, options),
         ])
-      ),
+      );
+    },
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   } as any) as any;
 }
