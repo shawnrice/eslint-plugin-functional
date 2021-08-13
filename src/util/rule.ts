@@ -5,6 +5,8 @@ import type { Node, Type } from "typescript";
 
 import { version } from "~/package.json";
 
+import { isTypeReadonly } from "./upstream/eslint-typescript/isTypeReadonly";
+
 export type BaseOptions = object;
 
 // "url" will be set automatically.
@@ -150,7 +152,8 @@ export function isReadonly<Context extends RuleContext<string, BaseOptions>>(
 
   const checker = parserServices.program.getTypeChecker();
   const type = getTypeOfNode(node, context);
-  return ESLintUtils.isTypeReadonly(checker, type!);
+  // return ESLintUtils.isTypeReadonly(checker, type!);
+  return isTypeReadonly(checker, type!);
 }
 
 /**

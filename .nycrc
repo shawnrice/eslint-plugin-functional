@@ -4,7 +4,8 @@
     "src/**/*"
   ],
   "exclude": [
-    "src/util/conditional-imports/**/*"
+    "src/util/conditional-imports/**/*",
+    "src/util/upstream/**/*"
   ],
   "reporter": [
     "lcov",
