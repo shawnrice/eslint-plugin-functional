@@ -3,6 +3,7 @@ import { ASTUtils, TSESTree } from "@typescript-eslint/experimental-utils";
 import {
   isCallExpression,
   isClassLike,
+  isForStatement,
   isFunctionExpressionLike,
   isFunctionLike,
   isIdentifier,
@@ -48,6 +49,18 @@ export function inFunctionBody(node: TSESTree.Node): boolean {
  */
 export function inClass(node: TSESTree.Node): boolean {
   return getAncestorOfType(isClassLike, node) !== null;
+}
+
+/**
+ * Test if the given node is in a for loop initializer.
+ */
+export function inForLoopInitializer(node: TSESTree.Node): boolean {
+  return (
+    getAncestorOfType(
+      (n, c): n is TSESTree.ForStatement => isForStatement(n) && n.init === c,
+      node
+    ) !== null
+  );
 }
 
 /**

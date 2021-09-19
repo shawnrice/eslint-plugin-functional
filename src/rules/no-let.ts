@@ -14,20 +14,37 @@ import {
   RuleMetaData,
   RuleResult,
 } from "../util/rule";
+import { inForLoopInitializer } from "../util/tree";
 
 // The name of this rule.
 export const name = "no-let" as const;
 
 // The options this rule can take.
-type Options = AllowLocalMutationOption & IgnorePatternOption;
+type Options = AllowLocalMutationOption &
+  IgnorePatternOption & {
+    readonly allowInForLoopInit: boolean;
+  };
 
 // The schema for the rule options.
 const schema: JSONSchema4 = [
-  deepMerge([allowLocalMutationOptionSchema, ignorePatternOptionSchema]),
+  deepMerge([
+    allowLocalMutationOptionSchema,
+    ignorePatternOptionSchema,
+    {
+      type: "object",
+      properties: {
+        allowInForLoopInit: {
+          type: "boolean",
+        },
+      },
+      additionalProperties: false,
+    },
+  ]),
 ];
 
 // The default options for the rule.
 const defaultOptions: Options = {
+  allowInForLoopInit: false,
   allowLocalMutation: false,
 };
 
@@ -54,11 +71,22 @@ const meta: RuleMetaData<keyof typeof errorMessages> = {
  */
 function checkVariableDeclaration(
   node: TSESTree.VariableDeclaration,
-  context: RuleContext<keyof typeof errorMessages, Options>
+  context: RuleContext<keyof typeof errorMessages, Options>,
+  options: Options
 ): RuleResult<keyof typeof errorMessages, Options> {
+  if (
+    node.kind !== "let" ||
+    (options.allowInForLoopInit && inForLoopInitializer(node))
+  ) {
+    return {
+      context,
+      descriptors: [],
+    };
+  }
+
   return {
     context,
-    descriptors: node.kind === "let" ? [{ node, messageId: "generic" }] : [],
+    descriptors: [{ node, messageId: "generic" }],
   };
 }
 

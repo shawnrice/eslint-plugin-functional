@@ -59,7 +59,38 @@ The default options:
 
 ```ts
 {
+  allowInForLoopInit: false,
   allowLocalMutation: false
+}
+```
+
+### `allowInForLoopInit`
+
+If set, `let`s inside of for a loop initializer are allowed. This does not include for...of or for...in loops.
+
+Examples of **correct** code for this rule:
+
+```js
+/* eslint functional/no-let: "error" */
+
+for (let i = 0; i < array.length; i++) {
+
+}
+```
+
+Examples of **incorrect** code for this rule:
+
+```js
+/* eslint functional/no-let: "error" */
+
+for (let element of array) {
+}
+```
+
+```js
+/* eslint functional/no-let: "error" */
+
+for (let [index, element] of array.entries()) {
 }
 ```
 
