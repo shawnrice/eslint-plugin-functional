@@ -81,10 +81,8 @@ export function createDummyRule(
   } as unknown as Rule.RuleModule;
 }
 
-export type RuleTesterTests = {
-  // eslint-disable-next-line functional/prefer-readonly-type
+export type MutableRuleTesterTests = {
   valid?: Array<ESLintRuleTester.ValidTestCase | string>;
-  // eslint-disable-next-line functional/prefer-readonly-type
   invalid?: ESLintRuleTester.InvalidTestCase[];
 };
 
@@ -93,8 +91,8 @@ export type RuleTesterTests = {
  */
 export function addFilename(
   filename: string,
-  tests: RuleTesterTests
-): RuleTesterTests {
+  tests: MutableRuleTesterTests
+): MutableRuleTesterTests {
   const { valid, invalid } = tests;
   return {
     invalid: invalid?.map((test) => ({ ...test, filename })),
